@@ -5,22 +5,31 @@ import javax.persistence.*;
 import org.openxava.annotations.*;
 
 import lombok.*;
- 
-@Entity  // Esto marca la clase Cliente como una entidad
-@Getter @Setter // Esto hace los campos a continuaci�n p�blicamente accesibles
 
-@View(name="Simple",
-members="numero, nombre")
+/**
+ * Entidad Cliente del sistema de facturación.
+ * Representa a un cliente con su información básica y dirección.
+ * Implementa Video 4: Entidades con relaciones embebidas (Direccion)
+ */
+@Entity  // Marca la clase como entidad JPA para persistencia en BD
+@Getter @Setter // Genera automáticamente getters y setters con Lombok
+
+@View(name="Simple", // Vista simplificada para referencias (Video 5: Navegación mejorada)
+members="numero, nombre") // Solo muestra número y nombre en referencias
 
 public class Cliente {
 
-	@Id  // La propiedad numero es la clave.  Las claves son obligatorias (required) por defecto
-    @Column(length=6)  // La longitud de columna se usa a nivel UI y a nivel DB
+	// Clave primaria: número único del cliente (Video 4: Entidades complejas)
+	@Id  // La propiedad numero es la clave. Las claves son obligatorias por defecto
+    @Column(length=6)  // Longitud usada tanto en UI como en BD
     int numero;
- 
-    @Column(length=50) // La longitud de columna se usa a nivel UI y a nivel DB
-    @Required  // Se mostrar� un error de validaci�n si la propiedad nombre se deja en blanco
+
+    // Nombre del cliente, campo requerido con validación automática
+    @Column(length=50) // Longitud máxima de 50 caracteres
+    @Required  // Validación: mostrará error si se deja en blanco
     String nombre;
-    @Embedded // As� para referenciar a una clase incrustable
+
+    // Dirección embebida: se almacena en la misma tabla que Cliente (Video 4: Relaciones)
+    @Embedded // Referencia a clase embebida (no entidad separada)
     Direccion direccion; // Una referencia Java convencional
 }

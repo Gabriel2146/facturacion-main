@@ -4,10 +4,14 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
              version="1.0">
-             
+
+    <!-- Unidad de persistencia principal para MySQL -->
     <persistence-unit name="default">
     	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    	<!-- DataSource JNDI configurado en context.xml para MySQL -->
     	<non-jta-data-source>java://comp/env/jdbc/facturacionDS</non-jta-data-source>
+
+    	<!-- Clases del sistema OpenXava/NaviOX -->
     	<class>org.openxava.session.GalleryImage</class>
     	<class>org.openxava.web.editors.DiscussionComment</class>
     	<class>com.openxava.naviox.model.ConfigurationRecord</class>
@@ -21,12 +25,14 @@
     	<class>com.openxava.naviox.model.SSORecord</class>
     	<class>com.openxava.naviox.model.User</class>
 		<class>com.openxava.naviox.model.LDAPConfiguration</class>
+
+        <!-- Propiedades JPA: actualización automática del esquema -->
         <properties>
             <property name="javax.persistence.schema-generation.database.action" value="update"/>
         </properties>
     </persistence-unit>
-                    
-    <!-- JUnit Hypersonic -->
+
+    <!-- Unidad de persistencia para testing con HSQLDB -->
     <persistence-unit name="junit">
     	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     	<class>org.openxava.web.editors.DiscussionComment</class>
@@ -44,6 +50,6 @@
         <properties>
 			<property name="hibernate.connection.url" value="jdbc:hsqldb:hsql://localhost:1666"/>
         </properties>
-    </persistence-unit>    
-    
+    </persistence-unit>
+
 </persistence>

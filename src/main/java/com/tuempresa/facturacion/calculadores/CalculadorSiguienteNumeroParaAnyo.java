@@ -1,26 +1,40 @@
 package com.tuempresa.facturacion.calculadores;
- 
+
 import javax.persistence.*;
 
 import org.openxava.calculators.*;
 import org.openxava.jpa.*;
 
 import lombok.*;
- 
+
+/**
+ * Calculador autom√°tico para n√∫meros de factura secuenciales por a√±o.
+ * Implementa Video 4: C√°lculos autom√°ticos avanzados
+ * Genera el siguiente n√∫mero de factura para un a√±o espec√≠fico.
+ */
 public class CalculadorSiguienteNumeroParaAnyo
-    implements ICalculator { // Un calculador tiene que implementar ICalculator
- 
-    @Getter @Setter     
-    int anyo; // Este valor se inyectar· antes de calcular
- 
-    public Object calculate() throws Exception { // Hace el c·lculo
-        Query query = XPersistence.getManager() // Una consulta JPA
-            .createQuery("select max(f.numero) from Factura f where f.anyo = :anyo"); // La consulta devuelve
-                                                              // el n˙mero de factura m·ximo del aÒo indicado
-        query.setParameter("anyo", anyo); // Ponemos el aÒo inyectado como par·metro de la consulta
+    implements ICalculator { // Un calculador debe implementar ICalculator
+
+    @Getter @Setter
+    int anyo; // Este valor se inyectar√° antes de calcular (desde Factura.anyo)
+
+    /**
+     * Calcula el siguiente n√∫mero de factura para el a√±o especificado.
+     * Consulta la BD para encontrar el m√°ximo n√∫mero existente y suma 1.
+     */
+    public Object calculate() throws Exception { // M√©todo que realiza el c√°lculo
+        // Consulta JPA para obtener el n√∫mero m√°ximo de factura del a√±o
+        Query query = XPersistence.getManager() // Obtiene el EntityManager de OpenXava
+            .createQuery("select max(f.numero) from Factura f where f.anyo = :anyo");
+
+        // Establece el par√°metro del a√±o inyectado
+        query.setParameter("anyo", anyo);
+
+        // Ejecuta la consulta y obtiene el resultado
         Integer ultimoNumero = (Integer) query.getSingleResult();
-        return ultimoNumero == null ? 1 : ultimoNumero + 1; // Devuelve el ˙ltimo n˙mero
-                                            // de factura del aÒo + 1 o 1 si no hay ˙ltimo n˙mero
+
+        // Devuelve el siguiente n√∫mero: 1 si no hay facturas, o √∫ltimo + 1
+        return ultimoNumero == null ? 1 : ultimoNumero + 1;
     }
- 
+
 }

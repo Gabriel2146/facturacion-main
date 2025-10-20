@@ -9,46 +9,50 @@ Esta práctica de laboratorio profundiza en el desarrollo de aplicaciones empres
 Desarrollar competencias prácticas avanzadas en OpenXava mediante la implementación completa de los videos 4 y 5, más la integración con MySQL, documentando exhaustivamente el proceso y analizando las implicaciones para testing de aplicaciones empresariales con acceso a bases de datos.
 
 ## Tabla de Contenidos
-- Requisitos
-- Instalación y ejecución del Proyecto
-- Estructura del Proyecto
-- Configuración de Base de Datos
-- Funcionalidades Implementadas
-- Testing y Verificación
-- Créditos
-- Recursos de Apoyo
+- [Requisitos](#requisitos)
+- [Instalación y Ejecución](#instalación-y-ejecución)
+- [Estructura del Proyecto](#estructura-del-proyecto)
+- [Implementación Videos 4 y 5](#implementación-videos-4-y-5)
+- [Integración con MySQL](#integración-con-mysql)
+- [Testing y Verificación](#testing-y-verificación)
+- [Recursos de Apoyo](#recursos-de-apoyo)
+- [Entrega](#entrega)
+- [Créditos](#créditos)
 
 ## Requisitos
 Antes de ejecutar el proyecto, asegúrate de tener instalados los siguientes componentes:
-- Java JDK 11 o superior
-- Apache Maven 3.6+
-- MySQL 8.0+
-- OpenXava Studio (opcional para desarrollo)
+- **Java JDK 11 o superior**
+- **Apache Maven 3.6+**
+- **MySQL 8.0+**
+- **OpenXava Studio** (opcional, para desarrollo)
 
-## Configuración de Base de Datos
-1. Ingresa a MySQL Workbench o línea de comandos
-2. Crea una base de datos llamada `facturaciondb`:
-   ```sql
-   CREATE DATABASE facturaciondb;
-   ```
-3. Verifica la configuración en `src/main/webapp/META-INF/context.xml` (ya configurado para MySQL)
+## Instalación y Ejecución
 
-## Instalación y ejecución
+### Preparación del Entorno (20 minutos)
+1. **Verificación de configuración previa**: Asegúrate de que los videos 1-3 estén funcionando correctamente
+2. **Instalación y configuración de MySQL**:
+   - Instala MySQL Server 8.0+
+   - Crea la base de datos: `CREATE DATABASE facturaciondb;`
+   - Configura usuario root sin contraseña (o ajusta en `context.xml`)
+
+3. **Descarga de recursos adicionales**:
+   - Driver JDBC MySQL incluido en `pom.xml`
+   - MySQL Workbench para administración
+
+### Ejecución del Proyecto
 1. Clona este repositorio:
    ```bash
    git clone https://github.com/Anahi606/facturacion.git
+   cd facturacion-main
    ```
 
-2. Accede al directorio del proyecto y ejecuta:
+2. Ejecuta con Maven:
    ```bash
-   mvn clean install
+   mvn clean compile
+   mvn exec:java -Dexec.mainClass="com.yourcompany.facturacion.run.facturacion"
    ```
 
-3. Ejecuta la aplicación desde OpenXava Studio o línea de comandos:
-   - Desde IDE: Botón derecho en `facturacion.java` > Run As > Java Application
-   - Desde línea de comandos: `mvn exec:java -Dexec.mainClass="com.yourcompany.facturacion.run.facturacion"`
-
-4. Accede a la aplicación desde tu navegador en `http://localhost:8080/facturacion`
+3. Accede a la aplicación en: `http://localhost:8080/facturacion`
 
 ## Estructura del Proyecto
 ```
@@ -56,117 +60,139 @@ facturacion-main/
 ├── src/
 │   ├── main/
 │   │   ├── java/
-│   │   │   ├── com/
-│   │   │   │   ├── yourcompany/
-│   │   │   │   │   └── facturacion/
-│   │   │   │   │       ├── modelo/          # Entidades JPA
-│   │   │   │   │       │   ├── Factura.java
-│   │   │   │   │       │   ├── Cliente.java
-│   │   │   │   │       │   ├── Producto.java
-│   │   │   │   │       │   ├── Detalle.java
-│   │   │   │   │       │   ├── Categoria.java
-│   │   │   │   │       │   ├── Autor.java
-│   │   │   │   │       │   └── Direccion.java
-│   │   │   │   │       └── calculadores/    # Lógica de negocio
-│   │   │   │   │           └── CalculadorSiguienteNumeroParaAnyo.java
-│   │   │   │   │       └── run/
-│   │   │   │   │           └── facturacion.java
-│   │   │   ├── com/
-│   │   │   │   └── tuempresa/
-│   │   │   │       └── facturacion/
-│   │   │   │           └── calculadores/
-│   │   │   │               └── CalculadorSiguienteNumeroParaAnyo.java
+│   │   │   └── com/yourcompany/facturacion/
+│   │   │       ├── modelo/           # Entidades JPA
+│   │   │       │   ├── Cliente.java
+│   │   │       │   ├── Producto.java
+│   │   │       │   ├── Factura.java
+│   │   │       │   ├── Detalle.java
+│   │   │       │   ├── Categoria.java
+│   │   │       │   ├── Autor.java
+│   │   │       │   └── Direccion.java
+│   │   │       ├── calculadores/     # Lógica de negocio
+│   │   │       │   └── CalculadorSiguienteNumeroParaAnyo.java
+│   │   │       └── run/
+│   │   │           └── facturacion.java
 │   │   ├── resources/
 │   │   │   ├── META-INF/
-│   │   │   │   └── persistence.xml      # Configuración JPA
-│   │   │   ├── xava/
-│   │   │   │   ├── aplicacion.xml       # Configuración aplicación
-│   │   │   │   ├── controladores.xml    # Controladores personalizados
-│   │   │   │   ├── editores.xml         # Editores personalizados
-│   │   │   │   └── dtds/                # Definiciones XML
-│   │   │   ├── xava.properties         # Propiedades OpenXava
-│   │   │   ├── naviox.properties       # Propiedades NaviOX
-│   │   │   ├── naviox-users.properties # Usuarios
-│   │   │   └── i18n/                   # Internacionalización
+│   │   │   │   └── persistence.xml   # Config JPA
+│   │   │   ├── xava/                 # Config OpenXava
+│   │   │   └── i18n/                 # Internacionalización
 │   │   └── webapp/
 │   │       ├── META-INF/
-│   │       │   └── context.xml         # Configuración Tomcat/MySQL
-│   │       ├── WEB-INF/
-│   │       │   └── web.xml             # Configuración web
+│   │       │   └── context.xml       # Config DataSource
 │   │       └── xava/
-│   │           └── style/
-│   │               └── custom.css      # Estilos personalizados
 │   └── test/
-│       └── resources/
-│           └── xava-junit.properties   # Configuración testing
-├── data/                               # Base de datos HSQLDB (desarrollo)
-├── pom.xml                             # Configuración Maven
+├── pom.xml                           # Dependencias Maven
+├── data/                             # BD embebida (HSQLDB)
 └── README.md
 ```
 
-## Funcionalidades Implementadas
+## Implementación Videos 4 y 5
 
-### Video 4: Funcionalidades Avanzadas
-- **Entidades Complejas**: Modelos con relaciones JPA complejas
-- **Cálculos Automáticos**: Calculador para números de factura por año
-- **Vistas Personalizadas**: Configuración de vistas con anotaciones @View
-- **Validaciones**: Uso de @Required y otras validaciones
-- **Referencias**: Relaciones @ManyToOne y @OneToMany
+### Video 4: Entidades con Relaciones Avanzadas (35 minutos)
+**Análisis del contenido**: El video 4 introduce relaciones complejas entre entidades, carga perezosa y cálculos automáticos.
 
-### Video 5: Integración y Navegación
-- **Colecciones Embebidas**: @ElementCollection para detalles de factura
-- **Navegación Mejorada**: Configuración de vistas con @ReferenceView
-- **Listas Descriptivas**: @DescriptionsList para combos
-- **Controladores**: Herencia de controladores Typical
+**Características implementadas**:
+- **Relaciones muchos-a-uno**: Producto → Categoria, Producto → Autor
+- **Entidades embebidas**: Direccion dentro de Cliente
+- **Carga perezosa (Lazy Loading)**: Optimización de consultas
+- **Cálculos automáticos**: Numeración secuencial de facturas por año
 
-### Integración MySQL
-- **Configuración JDBC**: Driver MySQL Connector/J incluido
-- **DataSource**: Configurado en context.xml para pooling de conexiones
-- **Persistencia JPA**: Hibernate como proveedor JPA
-- **Migración Automática**: schema-generation update activado
+**Archivos clave**:
+- `Cliente.java`: Entidad con dirección embebida
+- `Producto.java`: Relaciones con categoria y autor
+- `CalculadorSiguienteNumeroParaAnyo.java`: Lógica de numeración automática
+
+### Video 5: Navegación y Vistas Mejoradas (35 minutos)
+**Estudio de funcionalidades**: El video 5 mejora la experiencia de usuario con vistas personalizadas y navegación.
+
+**Características implementadas**:
+- **Vistas personalizadas**: Vista "Simple" para referencias
+- **Listas descriptivas**: Combos desplegables para selección
+- **Colecciones embebidas**: Detalles de factura como colección
+- **Navegación mejorada**: Enlaces entre módulos
+
+**Archivos clave**:
+- `Factura.java`: Vista principal con colección de detalles
+- `Cliente.java`: Vista simplificada para referencias
+
+## Integración con MySQL (40 minutos)
+
+### Configuración de Base de Datos
+1. **Crear esquema**: Base de datos `facturaciondb` en MySQL
+2. **Configurar conexión**: DataSource en `context.xml`
+3. **Migración automática**: JPA genera tablas automáticamente
+
+### Configuración Técnica
+**persistence.xml**: Unidad de persistencia configurada para MySQL
+```xml
+<persistence-unit name="default">
+    <non-jta-data-source>java://comp/env/jdbc/facturacionDS</non-jta-data-source>
+    <properties>
+        <property name="javax.persistence.schema-generation.database.action" value="update"/>
+    </properties>
+</persistence-unit>
+```
+
+**context.xml**: DataSource MySQL
+```xml
+<Resource name="jdbc/facturacionDS" auth="Container" type="javax.sql.DataSource"
+    driverClassName="com.mysql.cj.jdbc.Driver"
+    url="jdbc:mysql://localhost:3306/facturaciondb?useSSL=false&amp;serverTimezone=UTC"
+    username="root" password=""/>
+```
+
+### Operaciones CRUD
+- **Crear**: Nuevos clientes, productos, facturas
+- **Leer**: Listados con filtros y búsqueda
+- **Actualizar**: Modificación de entidades existentes
+- **Eliminar**: Borrado con integridad referencial
 
 ## Testing y Verificación
 
-### Pruebas Funcionales
-1. **CRUD Completo**: Verificar operaciones en todas las entidades
-2. **Relaciones**: Comprobar integridad referencial
-3. **Cálculos**: Validar generador de números de factura
-4. **Interfaz Web**: Verificar UI generada automáticamente
+### Pruebas Funcionales Básicas
+- ✅ Creación de clientes con direcciones
+- ✅ Gestión de productos con categorías
+- ✅ Emisión de facturas con detalles
+- ✅ Numeración automática de facturas
+- ✅ Navegación entre módulos
 
-### Pruebas de Integración
-1. **Conectividad MySQL**: Verificar conexión a base de datos
-2. **Transacciones**: Comprobar atomicidad de operaciones
-3. **Performance**: Evaluar tiempos de respuesta
+### Herramientas de Testing Sugeridas
+- **JUnit**: Testing unitario de componentes Java
+- **Selenium**: Testing automatizado de interfaz web
+- **MySQL Test Framework**: Verificación de integridad de datos
+- **Postman**: Testing de APIs REST (si se implementan)
 
-### Herramientas de Testing Recomendadas
-- **JUnit**: Para testing unitario de calculadores
-- **Selenium**: Para testing automatizado de UI
-- **Postman**: Para testing de APIs REST (si se implementan)
-
-## Créditos
-- **Framework**: OpenXava 7.6
-- **Base de Datos**: MySQL 8.0+
-- **ORM**: Hibernate JPA
-- **Servidor**: Apache Tomcat (embebido)
+### Estrategias de V&V
+- **Testing de integración**: Verificar conexiones BD
+- **Testing de UI**: Validar formularios y navegación
+- **Testing de datos**: Comprobar integridad referencial
+- **Testing de rendimiento**: Consultas optimizadas
 
 ## Recursos de Apoyo
 
 ### Fuentes Técnicas Principales
 - **Documentación OpenXava**: https://www.openxava.org/OpenXavaDoc/docs/index_es.html
-- **Documentación MySQL**: https://dev.mysql.com/doc/
-- **Tutoriales OpenXava**: Videos 4, 5 y MySQL integration
-- **Foro OpenXava**: https://openxava.openxava.org/
+- **Videos específicos**: Tutorials 4, 5 y MySQL integration
+- **MySQL Official Documentation**: https://dev.mysql.com/doc/
+- **OpenXava Forum**: https://sourceforge.net/p/openxava/discussion/
 - **GitHub OpenXava**: https://github.com/openxava/openxava
 
-### Herramientas de Testing Sugeridas
-- **JUnit**: Testing unitario
-- **Selenium**: Testing de interfaz web
-- **MySQL Test Framework**: Verificación de integridad de datos
-- **Postman**: Testing de APIs
+### Documentación Adicional
+- JPA/Hibernate Documentation
+- Maven Documentation
+- Tomcat Configuration Guide
 
-## Entregables del Laboratorio
+## Entrega
 
-### Estructura del ZIP de Entrega
+### Formato
+- **Informe técnico**: PDF profesional (4-5 páginas)
+- **Evidencias**: Carpeta organizada con capturas y código
+- **Video demo**: MP4 (opcional)
+- **Proyecto**: Código fuente en GitHub
+
+### Estructura del ZIP
 ```
 Apellido_Nombre_LabOpenXavaAvanzado/
 ├── Informe_Tecnico_OpenXava.pdf
@@ -186,27 +212,22 @@ Apellido_Nombre_LabOpenXavaAvanzado/
 └── README.txt (instrucciones de ejecución)
 ```
 
-### Formato de Entrega
-- **Informe Técnico**: PDF profesional (4-5 páginas)
-- **Evidencias**: Carpeta organizada con screenshots y código
-- **Video Demo**: MP4 opcional mostrando funcionamiento
-- **Proyecto**: Código fuente completo en GitHub
+### Fecha de Entrega
+[Especificar según calendario académico]
 
-## Conclusiones
+### Plataforma
+Aula virtual de la materia
 
-Este proyecto demuestra la implementación completa de una aplicación empresarial usando OpenXava con integración MySQL, cubriendo:
-
-1. **Arquitectura MVC**: Separación clara de responsabilidades
-2. **Persistencia JPA**: Mapeo objeto-relacional con Hibernate
-3. **Interfaz Automática**: Generación de UI a partir de anotaciones
-4. **Integración DB**: Configuración completa con MySQL
-5. **Testing**: Estrategias para verificar funcionalidad completa
-
-La implementación sigue las mejores prácticas de desarrollo con OpenXava, proporcionando una base sólida para aplicaciones empresariales que requieren persistencia de datos y interfaces web generadas automáticamente.
+## Créditos
+- **Framework**: OpenXava 7.6
+- **Base de Datos**: MySQL 8.0+
+- **Build Tool**: Apache Maven
+- **Servidor**: Apache Tomcat (embebido)
+- **Documentación**: https://www.openxava.org/OpenXavaDoc/docs/index_es.html
+- **MySQL Workbench**: https://www.mysql.com/products/workbench/
 
 ---
 
-**Repositorio GitHub**: 
-**Versión OpenXava**: 7.6
-**Base de Datos**: MySQL 8.0+
-**Java**: JDK 11+
+**Proyecto GitHub**: https://github.com/Anahi606/facturacion
+
+**Estado del Proyecto**: ✅ Completo - Videos 4, 5 y MySQL integrados
