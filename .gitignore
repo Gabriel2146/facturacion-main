@@ -1,0 +1,26 @@
+# Compilación y binarios
+/target/
+/temp/
+/build/
+/out/
+*.class
+*.jar
+*.war
+*.ear
+
+# Configuración del IDE
+.classpath
+.project
+.settings/
+.vscode/
+.idea/
+
+# Logs y archivos temporales
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
